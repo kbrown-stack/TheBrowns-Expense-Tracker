@@ -51,6 +51,7 @@ app.use(passport.session());
 app.use(flash());
 
 // Global variables
+
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
@@ -59,7 +60,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// The Routes
+
 app.use('/', require('./routes/dashboardRoutes'));
 app.use('/auth', require('./routes/authRoutes'));
 app.use('/expenses', require('./routes/expenseRoutes'));
