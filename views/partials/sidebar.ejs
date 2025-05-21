@@ -1,0 +1,29 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="/dashboard" class="nav-link <%= currentPath === '/dashboard' ? 'active' : '' %>">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/expenses" class="nav-link <%= currentPath.startsWith('/expenses') ? 'active' : '' %>">
+                <i class="fas fa-receipt me-2"></i>Expenses
+            </a>
+        </li>
+        <li>
+            <a href="/budget" class="nav-link <%= currentPath.startsWith('/budget') ? 'active' : '' %>">
+                <i class="fas fa-wallet me-2"></i>Budget
+            </a>
+        </li>
+        <li>
+            <a href="/categories" class="nav-link <%= currentPath.startsWith('/categories') ? 'active' : '' %>">
+                <i class="fas fa-tags me-2"></i>Categories
+            </a>
+        </li>
+        <li>
+            <a href="/reports/monthly" class="nav-link <%= currentPath.startsWith('/reports') ? 'active' : '' %>">
+                <i class="fas fa-chart-pie me-2"></i>Reports
+            </a>
+        </li>
+    </ul>
+</div>
