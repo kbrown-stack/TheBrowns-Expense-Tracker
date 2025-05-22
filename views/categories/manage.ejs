@@ -1,0 +1,245 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-cog me-2"></i>Manage Categories</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="/categories" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Categories
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Add New Category Form -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Add New Category</h5>
+            </div>
+            <div class="card-body">
+                <form action="/categories" method="POST" id="addCategoryForm">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="name" required maxlength="50">
+                        <div class="form-text">Enter a unique name for your category</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="categoryColor" class="form-label">Color</label>
+                        <div class="d-flex align-items-center">
+                            <input type="color" class="form-control form-control-color me-2" id="categoryColor" name="color" value="#007bff" title="Choose category color">
+                            <input type="text" class="form-control" id="colorHex" value="#007bff" readonly>
+                        </div>
+                        <div class="form-text">Choose a color to identify this category</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Add Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Existing Categories List -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Existing Categories</h5>
+                <span class="badge bg-secondary"><%= categories.length %> Categories</span>
+            </div>
+            <div class="card-body">
+                <% if (categories && categories.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="50">Color</th>
+                                    <th>Name</th>
+                                    <th width="150">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% categories.forEach(category => { %>
+                                    <tr id="category-row-<%= category._id %>">
+                                        <td>
+                                            <!-- <div class="category-color-dot" style="background-color: <%= category.color %>; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #dee2e6;"></div> -->
+                                        </td>
+                                        <td>
+                                            <span class="category-name"><%= category.name %></span>
+                                            <!-- Edit Form (Hidden by default) -->
+                                            <form class="edit-form d-none" data-category-id="<%= category._id %>">
+                                                <div class="d-flex align-items-center">
+                                                    <input type="text" class="form-control form-control-sm me-2" name="name" value="<%= category.name %>" required maxlength="50">
+                                                    <input type="color" class="form-control form-control-color form-control-sm me-2" name="color" value="<%= category.color %>">
+                                                    <button type="submit" class="btn btn-sm btn-success me-1">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-secondary cancel-edit">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm action-buttons" role="group">
+                                                <button class="btn btn-outline-primary edit-btn" data-category-id="<%= category._id %>">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger delete-btn" data-category-id="<%= category._id %>" data-category-name="<%= category.name %>">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="text-center py-4">
+                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                        <h5>No Categories Created</h5>
+                        <p class="text-muted">Start by creating your first expense category.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the category "<span id="categoryToDelete"></span>"?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone. If this category is used in any expenses, the deletion will fail.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Category
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Color picker sync
+        const colorPicker = document.getElementById('categoryColor');
+        const colorHex = document.getElementById('colorHex');
+        
+        colorPicker.addEventListener('input', function() {
+            colorHex.value = this.value;
+        });
+        
+        // Edit functionality
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const categoryId = this.dataset.categoryId;
+                const row = document.getElementById(`category-row-${categoryId}`);
+                const nameSpan = row.querySelector('.category-name');
+                const editForm = row.querySelector('.edit-form');
+                const actionButtons = row.querySelector('.action-buttons');
+                
+                // Hide name and action buttons, show edit form
+                nameSpan.classList.add('d-none');
+                actionButtons.classList.add('d-none');
+                editForm.classList.remove('d-none');
+            });
+        });
+        
+        // Cancel edit
+        document.querySelectorAll('.cancel-edit').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const editForm = this.closest('.edit-form');
+                const row = editForm.closest('tr');
+                const nameSpan = row.querySelector('.category-name');
+                const actionButtons = row.querySelector('.action-buttons');
+                
+                // Show name and action buttons, hide edit form
+                nameSpan.classList.remove('d-none');
+                actionButtons.classList.remove('d-none');
+                editForm.classList.add('d-none');
+            });
+        });
+        
+        // Handle edit form submission
+        document.querySelectorAll('.edit-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const categoryId = this.dataset.categoryId;
+                const formData = new FormData(this);
+                
+                // Create form for PUT request
+                const hiddenForm = document.createElement('form');
+                hiddenForm.method = 'POST';
+                hiddenForm.action = `/categories/${categoryId}`;
+                hiddenForm.style.display = 'none';
+                
+                // Add method override for PUT
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'PUT';
+                hiddenForm.appendChild(methodInput);
+                
+                // Add form data
+                for (let [key, value] of formData.entries()) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    hiddenForm.appendChild(input);
+                }
+                
+                document.body.appendChild(hiddenForm);
+                hiddenForm.submit();
+            });
+        });
+        
+        // Delete functionality
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const categoryId = this.dataset.categoryId;
+                const categoryName = this.dataset.categoryName;
+                
+                document.getElementById('categoryToDelete').textContent = categoryName;
+                document.getElementById('deleteForm').action = `/categories/${categoryId}`;
+                
+                const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                modal.show();
+            });
+        });
+        
+        // Form validation
+        document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+            const nameInput = document.getElementById('categoryName');
+            const name = nameInput.value.trim();
+            
+            if (name.length < 1) {
+                e.preventDefault();
+                nameInput.classList.add('is-invalid');
+                return false;
+            }
+            
+            nameInput.classList.remove('is-invalid');
+        });
+    });
+</script>

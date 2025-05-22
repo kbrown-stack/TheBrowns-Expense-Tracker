@@ -1,0 +1,155 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-tags me-2"></i>Categories</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="/categories/manage" class="btn btn-sm btn-primary">
+                <i class="fas fa-cog me-1"></i>Manage Categories
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Overview -->
+<div class="row">
+    <% if (categories && categories.length > 0) { %>
+        <% categories.forEach(category => { %>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <!-- <div class="category-color-indicator me-3" style="background-color: <%= category.color %>; width: 20px; height: 20px; border-radius: 50%;"></div> -->
+                            <h5 class="card-title mb-0"><%= category.name %></h5>
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col">
+                                <div class="stat-number">₦<%= category.totalExpenses.toLocaleString() %></div>
+                                <div class="stat-label text-muted">Total Spent</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="/reports/category?category=<%= category._id %>" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-chart-bar me-1"></i>View Report
+                                </a>
+                                <a href="/expenses?category=<%= category._id %>" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-list me-1"></i>View Expenses
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                    <h4>No Categories Yet</h4>
+                    <p class="text-muted">Create your first category to start organizing your expenses.</p>
+                    <a href="/categories/manage" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create Category
+                    </a>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<!-- Categories Summary Chart -->
+<% if (categories && categories.length > 0) { %>
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Category Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <canvas id="categoryDistributionChart" height="300"></canvas>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="category-legend">
+                            <h6>Category Breakdown</h6>
+                            <% 
+                                const totalExpenses = categories.reduce((sum, cat) => sum + cat.totalExpenses, 0);
+                                categories.sort((a, b) => b.totalExpenses - a.totalExpenses);
+                            %>
+                            <% categories.forEach(category => { %>
+                                <% if (category.totalExpenses > 0) { %>
+                                    <div class="legend-item d-flex align-items-center mb-2">
+                                        <!-- <div class="legend-color me-2" style="background-color: <%= category.color %>; width: 12px; height: 12px; border-radius: 50%;"></div> -->
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="legend-label"><%= category.name %></span>
+                                                <small class="text-muted"><%= ((category.totalExpenses / totalExpenses) * 100).toFixed(1) %>%</small>
+                                            </div>
+                                            <small class="text-muted">₦<%= category.totalExpenses.toLocaleString() %></small>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Script -->
+<script>
+    // Prepare chart data
+    const chartLabels = [];
+    const chartData = [];
+    const chartColors = [];
+    
+    // <% categories.forEach(category => { %>
+    //     <% if (category.totalExpenses > 0) { %>
+    //         chartLabels.push('<%= category.name %>');
+    //         chartData.push(<%= category.totalExpenses %>);
+    //         chartColors.push('<%= category.color %>');
+    //     <% } %>
+    // <% }); %>
+
+    // Create the chart
+    if (document.getElementById('categoryDistributionChart') && chartData.length > 0) {
+        const ctx = document.getElementById('categoryDistributionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: chartColors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ₦${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+<% } %>

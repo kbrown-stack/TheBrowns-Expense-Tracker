@@ -14,8 +14,10 @@ const connectDB = require('./config/db');
 // Initialize Express
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
 // Connect to MongoDB
+// require('./config/db');
 connectDB();
 
 // Configure Passport
@@ -23,6 +25,7 @@ require('./config/passport')(passport);
 
 // Set up EJS as the view engine
 app.use(expressLayouts);
+app.set('layout', 'layouts/main'); // this is for the express ejs to locate the layout for the project.
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -34,7 +37,8 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 
 // Set up static folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // Express session middleware
 app.use(session({
@@ -74,8 +78,6 @@ app.use((req, res) => {
   });
 });
 
-
-const PORT = process.env.PORT || 7000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

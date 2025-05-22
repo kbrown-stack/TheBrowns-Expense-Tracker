@@ -1,0 +1,270 @@
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+        
+        <!-- Left Side - Welcome Info -->
+
+        <div class="col-lg-6 d-none d-lg-block bg-register-image">
+            <div class="d-flex align-items-center justify-content-center h-100 bg-gradient-success">
+                <div class="text-center text-white">
+                    <div class="mb-4">
+                        <i class="fas fa-user-plus fa-5x opacity-75"></i>
+                    </div>
+                    <h1 class="display-4 font-weight-bold mb-4">Join Us Today!</h1>
+                    <h2 class="h3 mb-4">Start Your Financial Journey</h2>
+                    <p class="lead mb-4">Create your account and take the first step towards better financial management.</p>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                            <p class="small">Secure & Safe</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-mobile-alt fa-2x mb-2"></i>
+                            <p class="small">Easy to Use</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-clock fa-2x mb-2"></i>
+                            <p class="small">Real-time Tracking</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Registration Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <div class="register-form-container w-100" style="max-width: 450px;">
+                <div class="text-center mb-4">
+                    <i class="fas fa-calculator fa-3x text-success mb-3"></i>
+                    <h2 class="h4 text-gray-900 mb-4">Create Your Account</h2>
+                    <p class="text-muted">Join the Brows Family Expense Tracker</p>
+                </div>
+
+                <form action="/auth/register" method="POST" class="user" id="registerForm">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control form-control-user" id="firstName" name="firstName" 
+                                   placeholder="First Name" required maxlength="50">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control form-control-user" id="lastName" name="lastName" 
+                                   placeholder="Last Name" required maxlength="50">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control form-control-user" id="email" name="email" 
+                               placeholder="Email Address" required>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Password" required minlength="6">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                            <div class="form-text">Minimum 6 characters</div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" 
+                                       placeholder="Repeat Password" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="phone" class="form-label">Phone Number <span class="text-muted">(Optional)</span></label>
+                        <input type="tel" class="form-control form-control-user" id="phone" name="phone" 
+                               placeholder="Phone Number">
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and 
+                                <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            </label>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-user" id="registerBtn">
+                            <i class="fas fa-user-plus me-2"></i>Register Account
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <span class="small text-muted">Already have an account? </span>
+                    <a class="small text-decoration-none" href="/auth/login">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login Here!
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        
+        // Toggle password visibility
+        function setupPasswordToggle(toggleId, passwordId) {
+            const toggle = document.getElementById(toggleId);
+            const password = document.getElementById(passwordId);
+            
+            toggle.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+        }
+        
+        setupPasswordToggle('togglePassword', 'password');
+        setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
+        
+        // Real-time validation
+        const fields = {
+            firstName: {
+                element: document.getElementById('firstName'),
+                validate: (value) => value.trim().length >= 2 && value.trim().length <= 50,
+                message: 'First name must be between 2 and 50 characters'
+            },
+            lastName: {
+                element: document.getElementById('lastName'),
+                validate: (value) => value.trim().length >= 2 && value.trim().length <= 50,
+                message: 'Last name must be between 2 and 50 characters'
+            },
+            email: {
+                element: document.getElementById('email'),
+                validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                message: 'Please enter a valid email address'
+            },
+            password: {
+                element: document.getElementById('password'),
+                validate: (value) => value.length >= 6,
+                message: 'Password must be at least 6 characters long'
+            },
+            confirmPassword: {
+                element: document.getElementById('confirmPassword'),
+                validate: (value) => value === document.getElementById('password').value,
+                message: 'Passwords do not match'
+            },
+            phone: {
+                element: document.getElementById('phone'),
+                validate: (value) => !value || /^[\+]?[\d\s\-\(\)]{10,}$/.test(value),
+                message: 'Please enter a valid phone number'
+            }
+        };
+        
+        // Add event listeners for real-time validation
+        Object.keys(fields).forEach(fieldName => {
+            const field = fields[fieldName];
+            
+            field.element.addEventListener('blur', function() {
+                validateField(fieldName);
+            });
+            
+            field.element.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid')) {
+                    validateField(fieldName);
+                }
+            });
+        });
+        
+        // Special handling for confirm password
+        document.getElementById('password').addEventListener('input', function() {
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (confirmPassword.value && confirmPassword.classList.contains('is-invalid')) {
+                validateField('confirmPassword');
+            }
+        });
+        
+        function validateField(fieldName) {
+            const field = fields[fieldName];
+            const value = field.element.value;
+            const isValid = field.validate(value);
+            
+            if (isValid) {
+                field.element.classList.remove('is-invalid');
+                field.element.classList.add('is-valid');
+            } else {
+                field.element.classList.remove('is-valid');
+                field.element.classList.add('is-invalid');
+                field.element.nextElementSibling.textContent = field.message;
+            }
+            
+            return isValid;
+        }
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isFormValid = true;
+            
+            // Validate all fields
+            Object.keys(fields).forEach(fieldName => {
+                if (!validateField(fieldName)) {
+                    isFormValid = false;
+                }
+            });
+            
+            // Check terms agreement
+            const agreeTerms = document.getElementById('agreeTerms');
+            if (!agreeTerms.checked) {
+                agreeTerms.classList.add('is-invalid');
+                agreeTerms.nextElementSibling.nextElementSibling.textContent = 'You must agree to the terms and conditions';
+                isFormValid = false;
+            } else {
+                agreeTerms.classList.remove('is-invalid');
+            }
+            
+            if (isFormValid) {
+                // Show loading state
+                registerBtn.disabled = true;
+                registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
+                
+                // Submit form
+                this.submit();
+            } else {
+                // Scroll to first invalid field
+                const firstInvalid = document.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+            }
+        });
+        
+        // Auto-focus on first input
+        document.getElementById('firstName').focus();
+    });
+</script>

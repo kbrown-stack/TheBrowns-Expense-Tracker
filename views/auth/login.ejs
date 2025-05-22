@@ -1,0 +1,137 @@
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+
+        <!-- Left Side - Login Form -->
+
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <div class="login-form-container w-100" style="max-width: 400px;">
+                <div class="text-center mb-4">
+                    <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
+                    <h2 class="h4 text-gray-900 mb-4">Welcome Back!</h2>
+                    <p class="text-muted">Sign in to your account to continue</p>
+                </div>
+
+                <form action="/auth/login" method="POST" class="user">
+                    <div class="form-group mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control form-control-user" id="email" name="email" 
+                               placeholder="Enter Email Address..." required>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember Me
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-user">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <a class="small text-decoration-none" href="/auth/forgot-password">
+                        <i class="fas fa-key me-1"></i>Forgot Password?
+                    </a>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <span class="small text-muted">Don't have an account? </span>
+                    <a class="small text-decoration-none" href="/auth/register">
+                        <i class="fas fa-user-plus me-1"></i>Create an Account!
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Welcome Image/Info -->
+
+        <div class="col-lg-6 d-none d-lg-block bg-login-image">
+            <div class="d-flex align-items-center justify-content-center h-100 bg-gradient-primary">
+                <div class="text-center text-white">
+                    <div class="mb-4">
+                        <i class="fas fa-chart-line fa-5x opacity-75"></i>
+                    </div>
+                    <h1 class="display-4 font-weight-bold mb-4">Browns Family</h1>
+                    <h2 class="h3 mb-4">Expense Tracker</h2>
+                    <p class="lead mb-4">Take control of your finances with our easy-to-use expense tracking system.</p>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="fas fa-receipt fa-2x mb-2"></i>
+                            <p class="small">Track Expenses</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-chart-pie fa-2x mb-2"></i>
+                            <p class="small">Analyze Spending</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-piggy-bank fa-2x mb-2"></i>
+                            <p class="small">Save Money</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            // Toggle icon
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+        
+        // Form validation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!email || !password) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Please enter a valid email address.');
+                return false;
+            }
+        });
+        
+        // Auto-focus on first input
+        document.getElementById('email').focus();
+    });
+</script>

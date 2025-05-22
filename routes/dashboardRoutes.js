@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/dashboard');
   }
-  res.render('pages/auth/login', { 
+  res.render('auth/login', { 
     title: 'Welcome',
     currentPath: req.path
   });

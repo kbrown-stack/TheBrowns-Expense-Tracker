@@ -6,7 +6,7 @@ const { forwardAuthenticated } = require('../middlewares/auth');
 
 // Login page
 router.get('/login', forwardAuthenticated, (req, res) => {
-  res.render('pages/auth/login', {
+  res.render('auth/login', {
     title: 'Login',
     currentPath: req.path
   });
@@ -14,7 +14,7 @@ router.get('/login', forwardAuthenticated, (req, res) => {
 
 // Register page
 router.get('/register', forwardAuthenticated, (req, res) => {
-  res.render('pages/auth/register', {
+  res.render('auth/register', {
     title: 'Register',
     currentPath: req.path
   });
@@ -126,7 +126,7 @@ router.get('/logout', (req, res) => {
 
 // Forgot password page
 router.get('/forgot-password', forwardAuthenticated, (req, res) => {
-  res.render('pages/auth/forgot-password', {
+  res.render('auth/forgot-password', {
     title: 'Forgot Password',
     currentPath: req.path
   });
